@@ -8,6 +8,7 @@ function App() {
   const [projectsState, setProjectsState] = useState({
     selectedProjectId: undefined,
     projects: [],
+    tasks: [],
   })
 
   // to show add project form
@@ -59,12 +60,41 @@ function App() {
   // handle delete
   function handleDeleteProject(id) {
     setProjectsState((prevState) => {
-      let newProjects = prevState.projects.filter((prj) => prj.id != id);
+      let newProjects = prevState.projects.filter((prj) => prj.id != id)
 
       return {
         ...prevState,
         projects: newProjects,
-        selectedProjectId: undefined
+        selectedProjectId: undefined,
+      }
+    })
+  }
+
+  // to handle add task
+  function handleAddTask(newTaskObj) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        tasks: [
+          ...prevState.tasks,
+          {
+            taskId: Math.random(),
+            projectId: newTaskObj.prjId,
+            taskDetail: newTaskObj.task,
+          },
+        ],
+      }
+    })
+  }
+
+  // to handle delete task
+  function handleDeleteTask(taskId) {
+    setProjectsState((prevState) => {
+      let newTasks = prevState.tasks.filter((task) => task.taskId != taskId)
+
+      return {
+        ...prevState,
+        tasks: newTasks,
       }
     })
   }
@@ -91,8 +121,12 @@ function App() {
             project={projectsState.projects.find(
               (elem) => elem.id === projectsState.selectedProjectId,
             )}
-
-            handleDelete = {handleDeleteProject}
+            tasks={projectsState.tasks.filter(
+              (task) => task.projectId === projectsState.selectedProjectId,
+            )}
+            handleAddTask={handleAddTask}
+            handleDeleteTask={handleDeleteTask}
+            handleDelete={handleDeleteProject}
           />
         )}
       </main>
